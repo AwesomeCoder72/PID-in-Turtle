@@ -3,12 +3,14 @@ import time
 
 bot = turtle.Turtle()
 bot.showturtle()
-bot.speed(9)
+bot.speed(5)
 
 screen = turtle.Screen()
 screen.setup(800, 400)
 
-kP, kI, kD = 20, 0, 0
+kP = 0.7
+kI = 0 
+kD = 3
 finished = False
 error = 0
 
@@ -24,17 +26,17 @@ def drawLine(x):
 
 def PID(x):
   drawLine(x)
+  previousError = 0
   while not finished:
     position = bot.xcor()
     error = x - position
     print(error)
-    movement = (error*kP)/12
-    if error < 0:
-      bot.backward(abs(movement))
-    else:
-      bot.forward(abs(movement))
+    derivative = error - previousError
+
+    movement = (error*kP + derivative*kD)
+    bot.forward(movement)
     
-    
+    previousError = error
     time.sleep(0.05)
   
 PID(150)
